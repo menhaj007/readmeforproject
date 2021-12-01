@@ -1,5 +1,7 @@
 # Mastermind
 ## A terminal based game.
+# Mastermind
+## A terminal based game.
 
 This is documentation is a guide on how to install and use the application. The following topics are covered:
 
@@ -9,7 +11,7 @@ This is documentation is a guide on how to install and use the application. The 
 - Attempted extra features.
 
 ## Installation
-This application is built with Java 11 and MySQL server Version 5. A part of the applicaiton includes JUnit testing farmework to test the curial or the core function of the application. The instruciton provided here is based on the IntelliJ IDEA community edition IDE. Finally, there is a need for an API key (provided for this purpose) for random.org's API to access their random generator API. The two JAR files one for MySQL dependency and another for API is also provided with needs to be added into the module before being apple to use the application.
+This application is built with Java 11 and MySQL server Version 8. A part of the applicaiton includes JUnit testing farmework to test the curial or the core function of the application. The instruciton provided here is based on the IntelliJ IDEA community edition IDE. Finally, there is a need for an API key (provided for this purpose) for random.org's API to access their random generator API. The two JAR files one for MySQL dependency and another for API is also provided with needs to be added into the module before being able to use the application.
 
 - To Download Java 11, please referen to this link https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html
 - To install Java 11, please refer to this link https://docs.oracle.com/en/java/javase/11/install/
@@ -18,14 +20,93 @@ This application is built with Java 11 and MySQL server Version 5. A part of the
 - This link shows how to add a dependce/jar file into a java project in IntelliJ https://stackoverflow.com/questions/30651830/use-jdbc-mysql-connector-in-intellij-idea
 - For insturction on how to use the random.org API, please visit this https://github.com/iarks/random_org-api-example
 - Note: you don't need mysql server, if ou prefer to read and write guess history in the RAM. MySQL is used for presistance purposes.
+- To download the jar files, please visit the github link -> https://github.com/menhaj007/jarsFiles
 
-To make sure you have Java 11 installed, type in the terminal 
-- java -version
-- Check Project File Structure to make sure depencies are added. [Markdown site][df1]
+## Core requirements of this proejct is list below.
+### Prepareing the System for the project.
+1. To make sure you have Java 11 installed, type in the terminal 
+```
+$: java -version
+=>: Similiar Output:
+v openjdk version "11.0.11" 2021-04-20
+=>: openJDK runtime Environment OS..
+=>: openJDK 64bit Server VM..
+```
+2. Please make sure you have Intellija Idea installed. You can also downloaded here -> 
+-- https://www.jetbrains.com/idea/
+3. Random API generator. 
+--  You can create your own API, or can you the temporary one available inside the project.
+-- Download the Random Generator jar dependency, and review the insation provided on the link here -> 
+https://github.com/menhaj007/jarsFiles
 
-This text you see here is *actually- written in Markdown! To get a feel
-for Markdown's syntax, type some text into the left window and
-watch the results in the right.
+This meets all of the requirents to test the core feature of the application such as logic, feedback, history and output. However, if you do want to use it at this level, please comment out all methods in Mastermind.java where it marked as DBMethod. 
+If you want to test with MySQL and JUNIT, the following steps are required.
+
+4. install MySQL Database from the above links. Once install either using workbench or command line, issue the following commands to create database and make it active:
+-- change the path location for jdbc so it matches your computer's information.
+```
+public static void readFeedback() {
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mastermind", "your_user_name", "your_mysql's_user_password");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM computer_feedback");
+            while (resultSet.next()) {
+                String userData = resultSet.getString("id") +  "\t" + resultSet.getString("userName") + "\t" + resultSet.getString("correctNumberLocation") + "\t" + resultSet.getString("correctNumberOnly") + "\t" + resultSet.getString("incorrectGuess")+ "." ;
+                System.out.println(userData);
+            }
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+```
+- Visit this link for more information: 
+-- https://zetcode.com/db/mysqljava/#:~:text=To%20connect%20to%20MySQL%20in%20Java%2C%20MySQL%20provides,does%20not%20rely%20on%20the%20MySQL%20client%20libraries.
+```
+CREATE database mastermind; 
+use mastermind;
+```
+5. create tables;
+```
+CREATE TABLE computer_feedback(
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    userName VARCHAR(30) NULL,
+    correctNumberLocation INT NULL,
+    correctNumberOnly INT NULL,
+    incorrectGuess INT NULL
+);
+CREATE TABLE user_input_history(
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    userName VARCHAR(30) NULL,
+    userInput VARCHAR(250) NULL
+);
+
+CREATE TABLE user_name_feedback_guess(
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    userName VARCHAR(30) NULL,
+    feedback VARCHAR(250) NULL,
+    guess VARCHAR(250) NULL
+);
+```
+Use the following commands to delte a table, check the structure of the table.
+```
+show tables;
+desc table_name;
+drop table table_name;
+
+Select * from table_name;
+SELECT * FROM user_input_history;
+```
+6. Make sure that MySQL depency is added to your project. Please refer to the following link to download and install the dependency. Installing MySQL dependency jar file is similar to Random Generator Dependency.
+```
+https://github.com/menhaj007/jarsFiles
+```
+
+Now, your IDE should be able to run the application. For more information about using mysql with Java, please visit the following link.
+-- https://zetcode.com/db/mysqljava/#:~:text=To%20connect%20to%20MySQL%20in%20Java%2C%20MySQL%20provides,does%20not%20rely%20on%20the%20MySQL%20client%20libraries.
+7. Unit is import into the project but haven't been used in its full effect. There are links provided, if you want to use a JUnit library. Version 4 and 5 will work. 
+- https://it-qa.com/how-do-i-get-junit-5-in-intellij/
+- https://www.jetbrains.com/help/idea/junit.html
 
 ## Technlogy
 Familiarity with the following technologies can help.
@@ -34,13 +115,6 @@ Familiarity with the following technologies can help.
 - GitHub, for access repository
 - MySQL Workbench, MySQL terminal App.
 
-
-```sh
-Java
-node app
-```
-For production environments...
-
 ## Dependencies
 
 Dillinger is currently extended with the following plugins.
@@ -48,36 +122,12 @@ Instructions on how to use them in your own application are linked below.
 
 | Dependency | README |
 | ------ | ------ |
-| MySQL DBC Driver  | [plugins/dropbox/README.md][PlDb] |
-| Random.org API | [plugins/github/README.md][PlGh] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
+| MySQL DBC Driver  |[https://github.com/menhaj007/jarsFiles/blob/main/mysql-connector-java-8.0.27.jar] |
+| Random.org API | [https://github.com/menhaj007/jarsFiles/blob/main/mysql-connector-java-8.0.27.jar] |
+| JUNIT | [https://github.com/menhaj007/jarsFiles/blob/main/org_junit_platform_junit-platform-console-standalone_1.6.0_junit-platform-console-standalone-1.6.0.jar] |
 
-## Libraries insdie IDE
-- import java.util.*;
-
-## Development
-
-Want to contribute? Great!
-
-Dillinger uses Gulp + Webpack for fast developing.
-Make a change in your file and instantaneously see your updates!
-
-Open your favorite Terminal and run these commands.
-
-First Tab:
-
-```sh
-node app
-```
-Second Tab:
-```sh
-gulp watch
-```
-(optional) Third:
-```sh
-karma test
-```
 ## Desing of the app
+![an image caption Source: Ultimate Funny Dog Videos Compilation 2013.](https://images.unsplash.com/photo-1638292597251-6fe6b2ba50f9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)
 The following variables are used at global scope.
 - [computerPoints], initialized with 10. On Each correct guess, these points are deducted
 - [userPoints], initialized with the value of 10. On each wrong guess, user loses points.
@@ -121,3 +171,5 @@ The following parts are manual. It is user's choice to install with the applicat
 
 ## Conclusion
 There couple lessons that learned by doing this coding challenge. Since this was my first one, I spent sometimes on deciding what I should use. Will just a web-page with css, html, and JavaScript suffice, will Nodejs + MySQL + React will be a good choice? I started doing some of each, then revisited my notes and saw that the recruiter had emphasized to use a technology based on the job you applied. At that memoment, I realized that I wasted sometime. Immediately, started planing on Java. The first thing I thought was to build a spring-boot api, but I noticed that a player can't interact directly without the api without prior knowldge of postman, insome and etc. At end decided a CLI app should be enough. Once the application was built, then wondered should I save the history into a file or a database, and finally decided to use MySQL because it runs on MacOS, Windows and Linux. This chanlleged thoght me that best way to learn is to build. I had nevere tried to access mysql from a just a plain java application without a middleware and a server.
+
+
